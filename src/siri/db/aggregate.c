@@ -39,7 +39,7 @@ typedef int (* AGGR_cb)(
         char * err_msg);
 
 #define GROUP_TS(point) \
-    (point->ts + aggr->group_by - 1) / aggr->group_by * aggr->group_by + \
+    (point->ts + aggr->group_by ) / aggr->group_by * aggr->group_by + \
     aggr->offset
 
 static AGGR_cb AGGREGATES[F_OFFSET];
@@ -1173,12 +1173,13 @@ static siridb_points_t * AGGREGATE_group_by(
 
     for(start = end = 0; end < source->len; end++)
     {
-        if ((source->data + end)->ts > goup_ts)
+        if ((source->data + end)->ts >= goup_ts)
         {
             group.data = (source->data + start);
             group.len = end - start;
             point = points->data + points->len;
-            point->ts = goup_ts;
+            // point->ts = goup_ts;
+            point->ts = (source->data + start)->ts;
             if (aggr_cb(point, &group, aggr, err_msg))
             {
                 /* error occurred, return NULL */
