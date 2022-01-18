@@ -1195,7 +1195,7 @@ static siridb_points_t * AGGREGATE_group_by(
     group.data = (source->data + start);
     group.len = end - start;
     point = points->data + points->len;
-    point->ts = goup_ts;
+    point->ts = goup_ts - aggr->group_by;
     if (aggr_cb(point, &group, aggr, err_msg))
     {
         /* error occurred, return NULL */
